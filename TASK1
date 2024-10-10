@@ -1,0 +1,130 @@
+from tkinter import *
+from tkinter import messagebox
+import ttkbootstrap as tb
+from ttkbootstrap.constants import *
+
+# Initialize the main window with "solar" theme
+root = tb.Window(themename="solar")  # Changed theme to "solar"
+root.title("Simple Calculator with Choices")
+root.geometry("1500x1000")
+
+def check_login():
+    login_id = login_entry.get()
+    password = password_entry.get()
+    correct_login_id = "calculate"
+    correct_password = "12345"
+
+    if login_id == correct_login_id and password == correct_password:
+        messagebox.showinfo("Login Successful", "Welcome!")
+        show_calculation_option()  # Show the "Let's Do Calculation" option after successful login
+    else:
+        messagebox.showerror("Login Failed", "Invalid login ID or password")
+
+# Function to show the "Let's Do Calculation" option
+def show_calculation_option():
+    login_frame.pack_forget()  # Hide the login frame
+
+    calc_option_frame = tb.Frame(root)
+    calc_option_frame.pack(fill='both', expand=True)
+
+    tb.Label(calc_option_frame, text="Welcome to the Calculator", font=("Cambria", 35), bootstyle="success").pack(pady=20)
+
+    # Button to proceed to the calculator
+    tb.Button(calc_option_frame, text="Let's Do Calculation", bootstyle="primary", command=show_simple_calculator).pack(pady=20)
+
+# Function to show the simple calculator
+def show_simple_calculator():
+    # Clear the current frame before showing the calculator
+    for widget in root.winfo_children():
+        widget.pack_forget()
+
+    calculator_frame = tb.Frame(root)
+    calculator_frame.pack(fill='both', expand=True)
+
+    # Define function to perform calculations based on user choice
+    def calculate():
+        try:
+            num1 = float(entry_num1.get())
+            num2 = float(entry_num2.get())
+            choice = operation_choice.get()
+
+            if choice == "1":
+                result = f"Addition: {num1} + {num2} = {num1 + num2}"
+            elif choice == "2":
+                result = f"Subtraction: {num1} - {num2} = {num1 - num2}"
+            elif choice == "3":
+                result = f"Multiplication: {num1} * {num2} = {num1 * num2}"
+            elif choice == "4":
+                if num2 != 0:
+                    result = f"Division: {num1} / {num2} = {num1 / num2}"
+                else:
+                    result = "Error: Division by Zero"
+            else:
+                result = "Invalid choice. Please enter a number between 1 and 4."
+
+            result_label.config(text=result)
+        except ValueError:
+            messagebox.showerror("Input Error", "Please enter valid numbers.")
+
+    # Function to reset the input fields
+    def reset_inputs():
+        entry_num1.delete(0, END)
+        entry_num2.delete(0, END)
+        operation_choice.delete(0, END)
+        result_label.config(text="Result:")
+
+    # Create input fields for numbers
+    tb.Label(calculator_frame, text="Enter first number:", font=("Cambria", 25)).pack(pady=5)
+    entry_num1 = tb.Entry(calculator_frame, bootstyle="info")
+    entry_num1.pack(pady=5)
+
+    tb.Label(calculator_frame, text="Enter second number:", font=("Cambria", 25)).pack(pady=5)
+    entry_num2 = tb.Entry(calculator_frame, bootstyle="info")
+    entry_num2.pack(pady=5)
+
+    # Display numbered operations
+    tb.Label(calculator_frame, text="1. Add", font=("Cambria", 25)).pack(anchor='w', padx=10)
+    tb.Label(calculator_frame, text="2. Subtract", font=("Cambria", 25)).pack(anchor='w', padx=10)
+    tb.Label(calculator_frame, text="3. Multiply", font=("Cambria", 25)).pack(anchor='w', padx=10)
+    tb.Label(calculator_frame, text="4. Divide", font=("Cambria", 25)).pack(anchor='w', padx=10)
+
+    # Input for user to choose operation
+    tb.Label(calculator_frame, text="Enter your choice (1-4):", font=("Cambria", 25)).pack(pady=5)
+    operation_choice = tb.Entry(calculator_frame, bootstyle="info")
+    operation_choice.pack(pady=5)
+
+    # Button to calculate the result based on the selected operation
+    tb.Button(calculator_frame, text="Calculate", bootstyle="primary", command=calculate).pack(pady=15)
+
+    # Button to reset the inputs
+    tb.Button(calculator_frame, text="Reset", bootstyle="secondary", command=reset_inputs).pack(pady=15)
+
+    # Result label
+    result_label = tb.Label(calculator_frame, text="Result:", font=("Cambria", 25))
+    result_label.pack(pady=20)
+
+# Create the login frame and widgets
+login_frame = tb.Frame(root)
+
+# Add heading for the calculator
+heading_label = tb.Label(login_frame, text="Simple Calculator", font=("Cambria", 30), bootstyle="info")
+heading_label.pack(pady=20)
+
+login_label = tb.Label(login_frame, text="Login ID", font=("Cambria", 25), bootstyle="success")
+login_label.pack(pady=10)
+
+login_entry = tb.Entry(login_frame, bootstyle="info")
+login_entry.pack(pady=5)
+
+password_label = tb.Label(login_frame, text="Password", font=("Cambria", 25), bootstyle="success")
+password_label.pack(pady=10)
+
+password_entry = tb.Entry(login_frame, bootstyle="info", show='*')
+password_entry.pack(pady=5)
+
+login_button = tb.Button(login_frame, text="Login", bootstyle="primary", command=check_login)
+login_button.pack(pady=20)
+
+login_frame.pack(fill='both', expand=True)
+
+root.mainloop()
